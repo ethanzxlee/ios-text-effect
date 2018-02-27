@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     @IBAction func change(_ sender: UIButton) {
         let font = UIFont(name: "Arial", size: 30)
         let attr : [NSAttributedStringKey: Any] = [.font: font]
-        let attrString = NSAttributedString(string: "😀😍😡)", attributes: attr)
+        let attrString = NSAttributedString(string: "😀😍😡\n-😇", attributes: attr)
         
         textLayer?.text = attrString
         textLayer?.setNeedsDisplay()
@@ -80,32 +80,30 @@ class TextAnimationLayer: CALayer {
                         let runWidth: CGFloat = CGFloat(CTRunGetTypographicBounds(run, CFRange(location: 0, length: glyphsCount), &ascent, &descent, &leading)) + 1
                         let runHeight: CGFloat = ascent + descent + leading
                         let advancesPtr = CTRunGetAdvancesPtr(run)
+                        
                         let emojiLayer = CoreTextRunLayer(run: run)
                         emojiLayer.ascent = ascent
                         emojiLayer.descent = descent
                         emojiLayer.leading = leading
                         emojiLayer.advance = advancesPtr?.pointee.width ?? 0
-                        addSublayer(emojiLayer)
+                        self.addSublayer(emojiLayer)
                         
-                        let r = runPositions.advanced(by: runIndex).pointee
-                        let l = lineOriginsPtr.advanced(by: lineIndex).pointee
-                        
-                        let origin = CGPoint(x: runPositions.advanced(by: runIndex).pointee.x, y: lineOriginsPtr.advanced(by: lineIndex).pointee.y - bounds.height + runHeight)
+                       
+                        let origin = CGPoint(x: runPositions.pointee.x, y: bounds.height - lineOriginsPtr.advanced(by: lineIndex).pointee.y )
+                        print(origin)
                         let size = CGSize(width: runWidth, height: runHeight)
+                        emojiLayer.anchorPoint = CGPoint(x: 0, y: 1)
                         emojiLayer.position = origin
                         emojiLayer.bounds = CGRect(origin: CGPoint.zero, size: size)
-                        print(origin)
-                        print(size)
                         emojiLayer.setNeedsDisplay()
                     }
                     else {
-                        for i in 0..<glyphsCount {
-                            
-                        }
+//                        for i in 0..<glyphsCount {
+//
+//                        }
                     }
                 }
             }
-//            setAffineTransform(CGAffineTransform.init(scaleX: 1, y: -1).translatedBy(x: 0, y: bounds.size.height))
             isTextDirty = true
         }
     }
@@ -170,12 +168,19 @@ class CoreTextRunLayer : CALayer {
         guard let run = run else {
             return
         }
+        ctx.setFillColor(UIColor.blue.cgColor)
         ctx.fill(bounds)
-        let glyphsCount = CTRunGetGlyphCount(run)
-        ctx.textPosition = CGPoint(x: 0, y: descent + leading)
+        
+        // CTRunDraw seems to include the horizontal spacing before the run when drawing
+        // Since we've already position this layer after the spacing, we'll need to tell
+        // CoreText to minus that spacing 
+        ctx.textPosition = CGPoint(x: -ceil(position.x), y: descent + leading)
         ctx.translateBy(x: 0, y: bounds.size.height)
         ctx.scaleBy(x: 1, y: -1)
-        CTRunDraw(run, ctx, CFRange(location: 0, length: glyphsCount))
+        
+        CTRunDraw(run, ctx, CFRange(location: 0, length: 0))
+        
+        
     }
     
 }
