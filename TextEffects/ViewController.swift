@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         
         let font = UIFont(name: "Menlo", size: 100)
         let attr : [NSAttributedStringKey: Any] = [.font: font]
-        let attrString = NSAttributedString(string: "A*😀", attributes: attr)
+        let attrString = NSAttributedString(string: "-", attributes: attr)
         
         textLayer = TextAnimationLayer(text: attrString)
         textLayer!.frame = CGRect(x: 50, y: 50, width: 300, height: 300)
@@ -28,9 +28,9 @@ class ViewController: UIViewController {
 
     
     @IBAction func change(_ sender: UIButton) {
-        let font = UIFont(name: "Arial", size: 30)
+        let font = UIFont(name: "Zapfino", size: 50)
         let attr : [NSAttributedStringKey: Any] = [.font: font]
-        let attrString = NSAttributedString(string: "😀😍😡\n-😇", attributes: attr)
+        let attrString = NSAttributedString(string: "app", attributes: attr)
         
         textLayer?.text = attrString
         textLayer?.setNeedsDisplay()
@@ -69,7 +69,7 @@ class TextAnimationLayer: CALayer {
                     let glyphsCount = CTRunGetGlyphCount(run)
                     guard let glyphsPtr = CTRunGetGlyphsPtr(run),
                         let runPositions = CTRunGetPositionsPtr(run) else {
-                            return
+                            continue
                     }
                     
                     if isEmojiFont(runFont) {
@@ -77,7 +77,7 @@ class TextAnimationLayer: CALayer {
                         var ascent: CGFloat = 0
                         var descent: CGFloat = 0
                         var leading: CGFloat = 0
-                        let runWidth: CGFloat = CGFloat(CTRunGetTypographicBounds(run, CFRange(location: 0, length: glyphsCount), &ascent, &descent, &leading)) + 1
+                        let runWidth: CGFloat = CGFloat(CTRunGetTypographicBounds(run, CFRange(location: 0, length: 0), &ascent, &descent, &leading)) + 1
                         let runHeight: CGFloat = ascent + descent + leading
                         let advancesPtr = CTRunGetAdvancesPtr(run)
                         
@@ -86,21 +86,55 @@ class TextAnimationLayer: CALayer {
                         emojiLayer.descent = descent
                         emojiLayer.leading = leading
                         emojiLayer.advance = advancesPtr?.pointee.width ?? 0
-                        self.addSublayer(emojiLayer)
                         
-                       
-                        let origin = CGPoint(x: runPositions.pointee.x, y: bounds.height - lineOriginsPtr.advanced(by: lineIndex).pointee.y )
-                        print(origin)
+                        let origin = CGPoint(x: runPositions.pointee.x, y: bounds.height - lineOriginsPtr.advanced(by: lineIndex).pointee.y + descent + leading)
                         let size = CGSize(width: runWidth, height: runHeight)
                         emojiLayer.anchorPoint = CGPoint(x: 0, y: 1)
                         emojiLayer.position = origin
                         emojiLayer.bounds = CGRect(origin: CGPoint.zero, size: size)
+                        
+                        self.addSublayer(emojiLayer)
                         emojiLayer.setNeedsDisplay()
                     }
                     else {
-//                        for i in 0..<glyphsCount {
-//
-//                        }
+                        for i in 0..<glyphsCount {
+                            guard let glyphPtr = CTRunGetGlyphsPtr(run) else {
+                                continue
+                            }
+                            
+                            let glyph = glyphPtr.advanced(by: i).pointee
+                            
+                            guard let glyphPath = CTFontCreatePathForGlyph(runFont, glyph, nil) else {
+                                continue
+                            }
+                            
+                            var ascent: CGFloat = 0
+                            var descent: CGFloat = 0
+                            var leading: CGFloat = 0
+                            let runWidth: CGFloat = CGFloat(CTRunGetTypographicBounds(run, CFRange(location: i, length: 1), &ascent, &descent, &leading)) + 1
+                            let runHeight: CGFloat = ascent + descent + leading
+                            let advancesPtr = CTRunGetAdvancesPtr(run)
+                            let origin = CGPoint(x: runPositions.advanced(by: i).pointee.x, y: bounds.height - lineOriginsPtr.advanced(by: lineIndex).pointee.y)
+                            print(origin, runHeight)
+                            let shapeLayer = CAShapeLayer()
+                            shapeLayer.path = glyphPath
+//                            shapeLayer.backgroundColor = UIColor.orange.cgColor
+                            shapeLayer.anchorPoint = CGPoint(x:0,y:0)
+                            shapeLayer.position = CGPoint.zero
+                            shapeLayer.frame = CGRect(x: origin.x, y: origin.y, width: runWidth, height: runHeight)
+                            shapeLayer.strokeColor = UIColor.purple.cgColor
+                            shapeLayer.lineWidth = 2.5
+                            shapeLayer.fillColor = UIColor(white: 0, alpha: 0).cgColor
+                            
+                            let transform = CGAffineTransform(scaleX: 1, y: -1)//(translationX: 0, y: -shapeLayer.frame.height)//.scaledBy(x: 1, y: -1)
+                            shapeLayer.setAffineTransform(transform)
+                            
+//                            shapeLayer.strokeStart = 0.05
+
+                            
+                            self.addSublayer(shapeLayer)
+                            shapeLayer.needsDisplay()
+                        }
                     }
                 }
             }
@@ -168,19 +202,20 @@ class CoreTextRunLayer : CALayer {
         guard let run = run else {
             return
         }
+        // For debugging
         ctx.setFillColor(UIColor.blue.cgColor)
         ctx.fill(bounds)
         
         // CTRunDraw seems to include the horizontal spacing before the run when drawing
         // Since we've already position this layer after the spacing, we'll need to tell
-        // CoreText to minus that spacing 
+        // CoreText to minus that spacing
         ctx.textPosition = CGPoint(x: -ceil(position.x), y: descent + leading)
+        
+        // To make the CoreText drawing upside right
         ctx.translateBy(x: 0, y: bounds.size.height)
         ctx.scaleBy(x: 1, y: -1)
         
         CTRunDraw(run, ctx, CFRange(location: 0, length: 0))
-        
-        
     }
     
 }
