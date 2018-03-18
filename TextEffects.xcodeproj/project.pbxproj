@@ -14,6 +14,8 @@
 		950A6C0B2044B3CC0078BFDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950A6C092044B3CC0078BFDC /* LaunchScreen.storyboard */; };
 		950A6C162044B3CC0078BFDC /* TextEffectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A6C152044B3CC0078BFDC /* TextEffectsTests.swift */; };
 		950A6C212044B3CC0078BFDC /* TextEffectsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A6C202044B3CC0078BFDC /* TextEffectsUITests.swift */; };
+		95B16DFE205F1F0D003FCDBB /* TextAnimationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B16DFD205F1F0D003FCDBB /* TextAnimationLayer.swift */; };
+		95B16E00205F1F29003FCDBB /* CoreTextRunLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B16DFF205F1F29003FCDBB /* CoreTextRunLayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		950A6C1C2044B3CC0078BFDC /* TextEffectsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TextEffectsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		950A6C202044B3CC0078BFDC /* TextEffectsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEffectsUITests.swift; sourceTree = "<group>"; };
 		950A6C222044B3CC0078BFDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		95B16DFD205F1F0D003FCDBB /* TextAnimationLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnimationLayer.swift; sourceTree = "<group>"; };
+		95B16DFF205F1F29003FCDBB /* CoreTextRunLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTextRunLayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,7 @@
 				950A6C142044B3CC0078BFDC /* TextEffectsTests */,
 				950A6C1F2044B3CC0078BFDC /* TextEffectsUITests */,
 				950A6BFE2044B3CC0078BFDC /* Products */,
+				95B16DF4205F18D1003FCDBB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +104,8 @@
 			children = (
 				950A6C002044B3CC0078BFDC /* AppDelegate.swift */,
 				950A6C022044B3CC0078BFDC /* ViewController.swift */,
+				95B16DFD205F1F0D003FCDBB /* TextAnimationLayer.swift */,
+				95B16DFF205F1F29003FCDBB /* CoreTextRunLayer.swift */,
 				950A6C042044B3CC0078BFDC /* Main.storyboard */,
 				950A6C072044B3CC0078BFDC /* Assets.xcassets */,
 				950A6C092044B3CC0078BFDC /* LaunchScreen.storyboard */,
@@ -123,6 +130,13 @@
 				950A6C222044B3CC0078BFDC /* Info.plist */,
 			);
 			path = TextEffectsUITests;
+			sourceTree = "<group>";
+		};
+		95B16DF4205F18D1003FCDBB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +274,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				950A6C032044B3CC0078BFDC /* ViewController.swift in Sources */,
+				95B16E00205F1F29003FCDBB /* CoreTextRunLayer.swift in Sources */,
+				95B16DFE205F1F0D003FCDBB /* TextAnimationLayer.swift in Sources */,
 				950A6C012044B3CC0078BFDC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,6 +445,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 469XEEBJ9N;
 				INFOPLIST_FILE = TextEffects/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhexianlee.TextEffects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -444,6 +461,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 469XEEBJ9N;
 				INFOPLIST_FILE = TextEffects/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhexianlee.TextEffects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
